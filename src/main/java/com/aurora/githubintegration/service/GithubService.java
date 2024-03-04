@@ -15,21 +15,21 @@ public class GithubService {
     @Autowired
     private final GithubClient githubClient;
 
-    public GithubService(GithubClient githubClient){
+    public GithubService(GithubClient githubClient) {
         this.githubClient = githubClient;
     }
 
-    public GithubUserResponse getUserData(String githubUsername){
+    public GithubUserResponse getUserData(String githubUsername) {
         return githubClient.getUserData(githubUsername);
     }
 
-    public List<Repository> getRepositoryData(String githubUsername){
+    public List<Repository> getRepositoryData(String githubUsername) {
         List<GithubRepositoryResponse> repositories = githubClient.getUserRepositories(githubUsername);
         return repositories.stream()
                 .map(githubRepository ->
                         new Repository(
                                 githubRepository.getRepository_name(),
-                                "https://github.com/"+githubUsername+"/"+githubRepository.getRepository_name()
+                                "https://github.com/" + githubUsername + "/" + githubRepository.getRepository_name()
                         )
                 ).collect(Collectors.toList());
     }

@@ -19,12 +19,12 @@ public class GithubController {
     @Autowired
     private final GithubService githubService;
 
-    public GithubController(GithubService githubService){
+    public GithubController(GithubService githubService) {
         this.githubService = githubService;
     }
 
     @GetMapping("/user/{githubUsername}")
-    public ResponseEntity<UserDataResponse> getUserData(@PathVariable String githubUsername){
+    public ResponseEntity<UserDataResponse> getUserData(@PathVariable String githubUsername) {
         GithubUserResponse githubUserData = githubService.getUserData(githubUsername);
         List<Repository> repositories = githubService.getRepositoryData(githubUsername);
 
