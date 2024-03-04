@@ -1,22 +1,19 @@
 package com.aurora.githubintegration.client;
 
 import com.aurora.githubintegration.TestUtils;
-import com.aurora.githubintegration.model.github.GithubRepositoryResponse;
 import com.aurora.githubintegration.model.github.GithubUserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +32,7 @@ class GithubClientTest {
     }
 
     @Test
-    public void getUserData_whenSuccess_returnValidObject(){
+    public void getUserData_whenSuccess_returnValidObject() {
         when(restTemplateMock.getForObject(
                 "https://api.github.com/users/"+githubUsername,
                 GithubUserResponse.class
@@ -44,5 +41,15 @@ class GithubClientTest {
         GithubUserResponse response = githubClient.getUserData(githubUsername);
         assertThat(response).isNotNull();
         assertThat(response.getUser_name()).isEqualTo(githubUsername);
+    }
+
+    @Test()
+    public void getUserData_whenFailure_throwException() {
+        when(restTemplateMock.getForObject(
+                "https://api.github.com/users/"+githubUsername,
+                GithubUserResponse.class
+        )).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"));
+
+        assertThatThrownBy(() -> githubClient.getUserData(githubUsername)).isInstanceOf(HttpClientErrorException.class);
     }
 }
