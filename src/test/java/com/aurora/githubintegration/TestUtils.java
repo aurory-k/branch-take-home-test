@@ -8,6 +8,8 @@ import java.util.List;
 
 public class TestUtils {
 
+    public static String githubUsername = "testName";
+
     public static GithubUserResponse buildGithubUserResponse(String name){
         return new GithubUserResponse(
                 name,

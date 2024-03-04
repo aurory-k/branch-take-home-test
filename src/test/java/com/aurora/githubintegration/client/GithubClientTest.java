@@ -18,19 +18,17 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+import static com.aurora.githubintegration.TestUtils.githubUsername;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
 class GithubClientTest {
     @Mock
-    RestTemplate restTemplateMock = mock(RestTemplate.class);
+    RestTemplate restTemplateMock;
     GithubClient githubClient;
-
-    String githubUsername = "testName";
 
     @BeforeEach
     public void setup(){
