@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GithubRepository {
-    String name;
+public class Repository {
+    @JsonProperty("name")
+    String repository_name;
 
-    @JsonProperty("full_name")
-    String repo_path;
+    String url;
 }
