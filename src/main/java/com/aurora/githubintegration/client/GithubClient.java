@@ -5,7 +5,7 @@ import com.aurora.githubintegration.model.github.GithubRepositoryResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,21 +22,30 @@ public class GithubClient {
         this.restTemplate = restTemplate;
     }
 
-    public GithubUserResponse getUserData(String githubUsername) {
-        return restTemplate.getForObject(
+    public ResponseEntity<GithubUserResponse> getUserData(String githubUsername, HttpEntity<Void> cachingEntity) {
+//        return restTemplate.getForObject(
+//                "https://api.github.com/users/" + githubUsername,
+//                GithubUserResponse.class
+//        );
+
+
+
+        return restTemplate.exchange(
                 "https://api.github.com/users/" + githubUsername,
+                HttpMethod.GET,
+                cachingEntity,
                 GithubUserResponse.class
         );
     }
 
-    public List<GithubRepositoryResponse> getUserRepositories(String githubUsername) {
+    public ResponseEntity<List<GithubRepositoryResponse>> getUserRepositories(String githubUsername, HttpEntity<Void> cachingEntity) {
         return restTemplate.exchange(
                 "https://api.github.com/users/" + githubUsername + "/repos",
                 HttpMethod.GET,
-                null,
+                cachingEntity,
                 new ParameterizedTypeReference<List<GithubRepositoryResponse>>() {
                 }
-        ).getBody();
+        );
     }
 
 }

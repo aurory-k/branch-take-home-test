@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -40,8 +41,8 @@ public class GithubIntegrationTest {
 
         GithubUserResponse githubUserResponse = buildGithubUserResponse(githubUsername);
 
-        when(githubClient.getUserData(githubUsername)).thenReturn(githubUserResponse);
-        when(githubClient.getUserRepositories(githubUsername)).thenReturn(buildGithubRepositoryResponse(3));
+        when(githubClient.getUserData(githubUsername, null)).thenReturn(ResponseEntity.ok(githubUserResponse));
+        when(githubClient.getUserRepositories(githubUsername, null)).thenReturn(buildGithubRepositoryResponse(3));
 
         mvc.perform(MockMvcRequestBuilders
                         .get("/api/v1/user/" + githubUsername))
@@ -51,7 +52,7 @@ public class GithubIntegrationTest {
 
     @Test
     public void getUserData_whenGithubApiError_returnsError() throws Exception {
-        when(githubClient.getUserData(githubUsername)).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"));
+        when(githubClient.getUserData(githubUsername, null)).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"));
 
         mvc.perform(MockMvcRequestBuilders
                         .get("/api/v1/user/" + githubUsername))

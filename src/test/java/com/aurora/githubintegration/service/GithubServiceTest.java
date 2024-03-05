@@ -3,12 +3,15 @@ package com.aurora.githubintegration.service;
 import com.aurora.githubintegration.TestUtils;
 import com.aurora.githubintegration.client.GithubClient;
 import com.aurora.githubintegration.model.Repository;
+import com.aurora.githubintegration.model.UserCachingData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static com.aurora.githubintegration.TestUtils.githubUsername;
@@ -20,17 +23,20 @@ class GithubServiceTest {
     @Mock
     private GithubClient githubClientMock;
 
+    @Mock
+    private HashMap<String, UserCachingData> userDataCache;
+
     private GithubService githubService;
 
     @BeforeEach
     public void setup() {
-        githubService = new GithubService(githubClientMock);
+        githubService = new GithubService(githubClientMock, userDataCache);
     }
 
     @Test
     public void getRepositoryData_mapsToRepositoryModel(){
-        when(githubClientMock.getUserRepositories(githubUsername))
-                .thenReturn(TestUtils.buildGithubRepositoryResponse(2));
+        when(githubClientMock.getUserRepositories(githubUsername, null))
+                .thenReturn(ResponseEntity.ok(TestUtils.buildGithubRepositoryResponse(2)));
 
         List<Repository> mappedRepositories = githubService.getRepositoryData(githubUsername);
         assertThat(mappedRepositories).isNotNull();

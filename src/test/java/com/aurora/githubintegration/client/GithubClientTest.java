@@ -42,7 +42,7 @@ class GithubClientTest {
                 GithubUserResponse.class
         )).thenReturn(TestUtils.buildGithubUserResponse(githubUsername));
 
-        GithubUserResponse response = githubClient.getUserData(githubUsername);
+        GithubUserResponse response = githubClient.getUserData(githubUsername, null).getBody();
         assertThat(response).isNotNull();
         assertThat(response.getUser_name()).isEqualTo(githubUsername);
     }
@@ -54,7 +54,7 @@ class GithubClientTest {
                 GithubUserResponse.class
         )).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"));
 
-        assertThatThrownBy(() -> githubClient.getUserData(githubUsername)).isInstanceOf(HttpClientErrorException.class);
+        assertThatThrownBy(() -> githubClient.getUserData(githubUsername, null)).isInstanceOf(HttpClientErrorException.class);
     }
 
     @Test
@@ -66,9 +66,9 @@ class GithubClientTest {
                 new ParameterizedTypeReference<List<GithubRepositoryResponse>>() {}
         )).thenReturn(ResponseEntity.ok(TestUtils.buildGithubRepositoryResponse(3)));
 
-        List<GithubRepositoryResponse> response = githubClient.getUserRepositories(githubUsername);
-        assertThat(response).isNotNull();
-        assertThat(response.size()).isEqualTo(3);
+        ResponseEntity<List<GithubRepositoryResponse>> response = githubClient.getUserRepositories(githubUsername, null);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().size()).isEqualTo(3);
     }
 
     @Test()
@@ -80,6 +80,6 @@ class GithubClientTest {
                 new ParameterizedTypeReference<List<GithubRepositoryResponse>>() {}
         )).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"));
 
-        assertThatThrownBy(() -> githubClient.getUserRepositories(githubUsername)).isInstanceOf(HttpClientErrorException.class);
+        assertThatThrownBy(() -> githubClient.getUserRepositories(githubUsername, null)).isInstanceOf(HttpClientErrorException.class);
     }
 }
