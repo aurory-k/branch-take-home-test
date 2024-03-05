@@ -36,8 +36,7 @@ public class GithubClient {
                 "https://api.github.com/users/" + githubUsername + "/repos",
                 HttpMethod.GET,
                 cachingEntity,
-                new ParameterizedTypeReference<List<GithubRepositoryResponse>>() {
-                }
+                new ParameterizedTypeReference<>() {}
         );
     }
 
