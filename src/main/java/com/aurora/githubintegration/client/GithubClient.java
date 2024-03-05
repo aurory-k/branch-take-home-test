@@ -23,13 +23,6 @@ public class GithubClient {
     }
 
     public ResponseEntity<GithubUserResponse> getUserData(String githubUsername, HttpEntity<Void> cachingEntity) {
-//        return restTemplate.getForObject(
-//                "https://api.github.com/users/" + githubUsername,
-//                GithubUserResponse.class
-//        );
-
-
-
         return restTemplate.exchange(
                 "https://api.github.com/users/" + githubUsername,
                 HttpMethod.GET,

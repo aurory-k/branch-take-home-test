@@ -21,6 +21,8 @@ import java.util.List;
 import static com.aurora.githubintegration.TestUtils.githubUsername;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -37,10 +39,12 @@ class GithubClientTest {
 
     @Test
     public void getUserData_whenSuccess_returnValidObject() {
-        when(restTemplateMock.getForObject(
-                "https://api.github.com/users/"+githubUsername,
-                GithubUserResponse.class
-        )).thenReturn(TestUtils.buildGithubUserResponse(githubUsername));
+        when(restTemplateMock.exchange(
+                eq("https://api.github.com/users/" + githubUsername),
+                eq(HttpMethod.GET),
+                any(),
+                eq(GithubUserResponse.class)
+        )).thenReturn(ResponseEntity.ok(TestUtils.buildGithubUserResponse(githubUsername)));
 
         GithubUserResponse response = githubClient.getUserData(githubUsername, null).getBody();
         assertThat(response).isNotNull();
@@ -49,9 +53,11 @@ class GithubClientTest {
 
     @Test()
     public void getUserData_whenFailure_throwException() {
-        when(restTemplateMock.getForObject(
-                "https://api.github.com/users/"+githubUsername,
-                GithubUserResponse.class
+        when(restTemplateMock.exchange(
+                eq("https://api.github.com/users/" + githubUsername),
+                eq(HttpMethod.GET),
+                any(),
+                eq(GithubUserResponse.class)
         )).thenThrow(new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"));
 
         assertThatThrownBy(() -> githubClient.getUserData(githubUsername, null)).isInstanceOf(HttpClientErrorException.class);

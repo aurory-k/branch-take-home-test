@@ -42,7 +42,7 @@ public class GithubIntegrationTest {
         GithubUserResponse githubUserResponse = buildGithubUserResponse(githubUsername);
 
         when(githubClient.getUserData(githubUsername, null)).thenReturn(ResponseEntity.ok(githubUserResponse));
-        when(githubClient.getUserRepositories(githubUsername, null)).thenReturn(buildGithubRepositoryResponse(3));
+        when(githubClient.getUserRepositories(githubUsername, null)).thenReturn(ResponseEntity.ok(buildGithubRepositoryResponse(3)));
 
         mvc.perform(MockMvcRequestBuilders
                         .get("/api/v1/user/" + githubUsername))
